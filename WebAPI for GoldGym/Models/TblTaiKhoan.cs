@@ -10,7 +10,7 @@ namespace WebAPI_for_GoldGym.Models
         public string TenDangNhap { get; set; } = null!;
         public string MatKhau { get; set; } = null!;
         public string Quyen { get; set; } = null!;
-        public bool TrangThaiPremium { get; set; }
+        public string? TrangThaiPremium { get; set; }
         public DateTime ThoiGianDk { get; set; }
 
     }

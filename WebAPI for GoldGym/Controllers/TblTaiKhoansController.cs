@@ -43,13 +43,13 @@ namespace WebAPI_for_GoldGym.Controllers
 
         // PUT: api/TblTaiKhoans/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTblTaiKhoan(int id, TblTaiKhoan tblTaiKhoan)
+        [HttpPut]
+        public async Task<IActionResult> PutTblTaiKhoan(TblTaiKhoan tblTaiKhoan)
         {
-            if (id != tblTaiKhoan.IdTaiKhoan)
+            /*if (id != tblTaiKhoan.IdTaiKhoan)
             {
                 return BadRequest();
-            }
+            }*/
 
             _context.Entry(tblTaiKhoan).State = EntityState.Modified;
 
@@ -59,7 +59,7 @@ namespace WebAPI_for_GoldGym.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TblTaiKhoanExists(id))
+                if (!TblTaiKhoanExists(tblTaiKhoan.IdTaiKhoan))
                 {
                     return NotFound();
                 }
@@ -74,7 +74,7 @@ namespace WebAPI_for_GoldGym.Controllers
 
         // POST: api/TblTaiKhoans
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("DangKy")]
         public async Task<ActionResult<datadangkitk>> PostDangKyTaiKhoan([FromBody]datadangkitk dataTaiKhoan)
         {
             var checkTenTaiKhoan = _context.TblTaiKhoans.Where(x => x.TenDangNhap == dataTaiKhoan.TenDangNhap);
@@ -112,12 +112,21 @@ namespace WebAPI_for_GoldGym.Controllers
             var checkTenTaiKhoan = _context.TblTaiKhoans.Where(x => x.TenDangNhap == Tkdangnhap.TenDangNhap && x.MatKhau == Tkdangnhap.MatKhau);
             if (checkTenTaiKhoan.Count() > 0)
             {
-                return Ok(checkTenTaiKhoan.First().IdTaiKhoan);
+                return Ok(checkTenTaiKhoan.First());
             }
             else
             {
                 return BadRequest(new { message = "username or password is not correct" });
             }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<TblTaiKhoan>> PostTblThongTinTk([FromBody]TblTaiKhoan TblTaiKhoan)
+        {
+            _context.TblTaiKhoans.Add(TblTaiKhoan);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTblTaiKhoan", new { id = TblTaiKhoan.IdTaiKhoan }, TblTaiKhoan);
         }
 
         // DELETE: api/TblTaiKhoans/5
@@ -129,9 +138,64 @@ namespace WebAPI_for_GoldGym.Controllers
             {
                 return NotFound();
             }
+            
+            //doan nay remove toan bo danh sach tap, lich tap cua user. can remove ca chi tiet, va thong tin tai khoan
 
+            //remove thong tin tai khoan neu co
+            TblThongTinTk thongtintaikhoan = (from tttk in _context.TblThongTinTks
+                                              where tttk.IdTaiKhoan == id
+                                              select tttk).FirstOrDefault();
+            if(thongtintaikhoan != null)
+            _context.TblThongTinTks.Remove(thongtintaikhoan);
+            _context.SaveChanges();
+
+            //remove danh sach tap va chi tiet danh sach tap neu co
+            List<TblDstap> tblDstaps = _context.TblDstaps.Where(x => x.IdTaiKhoan == id).ToList();
+            if (tblDstaps != null)
+            {
+                foreach(TblDstap t in tblDstaps)
+                {
+                    List<TblChiTietDstap> CTDStap = (from ct in _context.TblChiTietDstaps
+                                                     where ct.IdDstap == t.IdDstap
+                                                     select ct).ToList();
+                    if (CTDStap.Count > 0)
+                    {
+                        foreach (TblChiTietDstap ct in CTDStap)
+                        {
+                            _context.TblChiTietDstaps.Remove(ct);
+                        }
+                        _context.SaveChanges();
+                    }
+                    _context.TblDstaps.Remove(t);
+                    _context.SaveChanges();
+                }
+            }
+
+            //remove lich tap va chi tiet lich tap
+            List<TblLichTap> tblLichTaps = _context.TblLichTaps.Where(x => x.IdTaiKhoan == id).ToList();
+            if (tblLichTaps != null)
+            {
+                foreach(TblLichTap t in tblLichTaps)
+                {
+                    List<TblChiTietLichTap> CTLtap = (from ct in _context.TblChiTietLichTaps
+                                                      where ct.IdLichTap == t.IdLichTap
+                                                      select ct).ToList();
+                    if (CTLtap.Count > 0)
+                    {
+                        foreach (TblChiTietLichTap ct in CTLtap)
+                        {
+                            _context.TblChiTietLichTaps.Remove(ct);
+                        }
+                        _context.SaveChanges();
+                    }
+                    _context.TblLichTaps.Remove(t);
+                    _context.SaveChanges();
+                }
+            }
+
+            //sau do remove tai khoan
             _context.TblTaiKhoans.Remove(tblTaiKhoan);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return NoContent();
         }

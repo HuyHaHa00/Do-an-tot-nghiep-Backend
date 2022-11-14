@@ -70,13 +70,13 @@ namespace WebAPI_for_GoldGym.Controllers
 
         // PUT: api/TblLichTaps/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTblLichTap(int id, TblLichTap tblLichTap)
+        [HttpPut]
+        public async Task<IActionResult> PutTblLichTap(TblLichTap tblLichTap)
         {
-            if (id != tblLichTap.IdLichTap)
+            /*if (id != tblLichTap.IdLichTap)
             {
                 return BadRequest();
-            }
+            }*/
 
             _context.Entry(tblLichTap).State = EntityState.Modified;
 
@@ -86,7 +86,7 @@ namespace WebAPI_for_GoldGym.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TblLichTapExists(id))
+                if (!TblLichTapExists(tblLichTap.IdLichTap))
                 {
                     return NotFound();
                 }
@@ -114,6 +114,29 @@ namespace WebAPI_for_GoldGym.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTblLichTap(int id)
         {
+            /*var tblLichTap = await _context.TblLichTaps.FindAsync(id);
+            if (tblLichTap == null)
+            {
+                return NotFound();
+            }
+
+            _context.TblLichTaps.Remove(tblLichTap);
+            await _context.SaveChangesAsync();
+
+            return NoContent();*/
+            List<TblChiTietLichTap> CTLtap = (from ct in _context.TblChiTietLichTaps
+                                               where ct.IdLichTap == id
+                                               select ct).ToList();
+
+            if (CTLtap.Count > 0)
+            {
+                foreach (TblChiTietLichTap ct in CTLtap)
+                {
+                    _context.TblChiTietLichTaps.Remove(ct);
+                }
+                _context.SaveChanges();
+            }
+
             var tblLichTap = await _context.TblLichTaps.FindAsync(id);
             if (tblLichTap == null)
             {

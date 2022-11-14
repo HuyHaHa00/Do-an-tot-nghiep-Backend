@@ -177,6 +177,8 @@ namespace WebAPI_for_GoldGym.Models
                 entity.Property(e => e.ThoiGianDk)
                     .HasColumnType("datetime")
                     .HasColumnName("ThoiGianDK");
+
+                entity.Property(e => e.IdTaiKhoan).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<TblThongTinTk>(entity =>

@@ -66,13 +66,13 @@ namespace WebAPI_for_GoldGym.Controllers
 
         // PUT: api/TblChiTietLichTaps/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTblChiTietLichTap(int id, TblChiTietLichTap tblChiTietLichTap)
+        [HttpPut]
+        public async Task<IActionResult> PutTblChiTietLichTap(TblChiTietLichTap tblChiTietLichTap)
         {
-            if (id != tblChiTietLichTap.IdChiTietLichTap)
+            /*if (id != tblChiTietLichTap.IdChiTietLichTap)
             {
                 return BadRequest();
-            }
+            }*/
 
             _context.Entry(tblChiTietLichTap).State = EntityState.Modified;
 
@@ -82,7 +82,7 @@ namespace WebAPI_for_GoldGym.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TblChiTietLichTapExists(id))
+                if (!TblChiTietLichTapExists(tblChiTietLichTap.IdChiTietLichTap))
                 {
                     return NotFound();
                 }
@@ -97,7 +97,7 @@ namespace WebAPI_for_GoldGym.Controllers
 
         // POST: api/TblChiTietLichTaps
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("AddWithList")]
         public async Task<ActionResult<TblChiTietLichTap>> PostTblChiTietLichTapTheoIDTaiKhoan([FromBody] List<TblChiTietLichTap> tblctlt)
         {
             //_context.TblChiTietLichTaps.Add(tblChiTietLichTap);
@@ -126,6 +126,15 @@ namespace WebAPI_for_GoldGym.Controllers
             }
             _context.SaveChanges();
             return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<TblChiTietLichTap>> PostTblChiTietLichTap(TblChiTietLichTap tblChiTietLichTap)
+        {
+            _context.TblChiTietLichTaps.Add(tblChiTietLichTap);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTblChiTietLichTap", new { id = tblChiTietLichTap.IdChiTietLichTap }, tblChiTietLichTap);
         }
 
         // DELETE: api/TblChiTietLichTaps/5

@@ -55,13 +55,13 @@ namespace WebAPI_for_GoldGym.Controllers
 
             // PUT: api/TblChiTietDstaps/5
             // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTblChiTietDstap(int id, TblChiTietDstap tblChiTietDstap)
+        [HttpPut]
+        public async Task<IActionResult> PutTblChiTietDstap(TblChiTietDstap tblChiTietDstap)
         {
-            if (id != tblChiTietDstap.IdChiTietDstap)
+            /*if (id != tblChiTietDstap.IdChiTietDstap)
             {
                 return BadRequest();
-            }
+            }*/
 
             _context.Entry(tblChiTietDstap).State = EntityState.Modified;
 
@@ -71,7 +71,7 @@ namespace WebAPI_for_GoldGym.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TblChiTietDstapExists(id))
+                if (!TblChiTietDstapExists(tblChiTietDstap.IdChiTietDstap))
                 {
                     return NotFound();
                 }
