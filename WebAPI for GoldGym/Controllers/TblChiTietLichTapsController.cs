@@ -53,6 +53,7 @@ namespace WebAPI_for_GoldGym.Controllers
                                                    IdLichTap = ctlt.IdLichTap,
                                                    IdDstap = (int)ctlt.IdDstap,
                                                    BuoiTap = ctlt.BuoiTap,
+                                                   TrangThaiBuoiTap = ctlt.TrangThaiBuoiTap,
                                                    TenDstap = dst.TenDstap,
                                                    MoTaDstap = dst.MoTaDstap,
                                                    LoaiDstap = dst.LoaiDstap,

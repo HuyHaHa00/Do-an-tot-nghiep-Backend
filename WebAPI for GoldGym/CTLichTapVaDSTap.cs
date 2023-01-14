@@ -9,6 +9,7 @@
         public string TenDstap { get; set; } = null!;
         public string? MoTaDstap { get; set; }
         public string LoaiDstap { get; set; } = null!;
+        public int? TrangThaiBuoiTap { get; set; }
 
     }
 }

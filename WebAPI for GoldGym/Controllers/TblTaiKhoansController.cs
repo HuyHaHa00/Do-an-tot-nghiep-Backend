@@ -79,7 +79,7 @@ namespace WebAPI_for_GoldGym.Controllers
         {
             var checkTenTaiKhoan = _context.TblTaiKhoans.Where(x => x.TenDangNhap == dataTaiKhoan.TenDangNhap);
             if (checkTenTaiKhoan.Count() > 0)
-                return BadRequest(new { message = "This username is already taken" });
+                return BadRequest(new { message = "This username is already in use" });
 
             else
             {

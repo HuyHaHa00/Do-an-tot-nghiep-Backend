@@ -9,6 +9,7 @@ namespace WebAPI_for_GoldGym.Models
         public int IdLichTap { get; set; }
         public int? IdDstap { get; set; }
         public int BuoiTap { get; set; }
+        public int? TrangThaiBuoiTap { get; set; } 
 
     }
 }
